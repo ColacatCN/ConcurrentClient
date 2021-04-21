@@ -1,0 +1,13 @@
+global-config:
+  client-config:
+    type: http
+    amount: 10
+    proxyIP: 127.0.0.1
+    proxyPort: 8081
+    appIP: 127.0.0.1
+    appPort: 10727
+
+  data-config:
+    type: byte
+    path:
+    size: 1024
