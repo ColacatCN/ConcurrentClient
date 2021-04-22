@@ -68,18 +68,18 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
     }
 
     @Override
-    public void sendMsg(Object msg) throws Exception {
+    public void sendMsg() throws Exception {
         initializeClientFactory();
         latch.await();
         for (Channel channel : channelList) {
             executorService.submit(() -> {
                 for (; ; ) {
-                    byte[] bytes = (byte[]) msg;
+                    byte[] bytes = getMsg();
                     if (log.isDebugEnabled()) {
                         log.debug(Thread.currentThread().getName() + ": " + Arrays.toString(bytes));
                     }
                     // TODO: 埋点
-                    channel.writeAndFlush(msg);
+                    channel.writeAndFlush(bytes);
                 }
             });
         }

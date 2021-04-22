@@ -8,11 +8,8 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.NettyClientF
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.SocketClientFactoryImpl;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.service.IConcurrentClientService;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.BeanUtil;
-import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.DataTypeEnum.BYTE;
 
 @Service
 public class ConcurrentClientServiceImpl implements IConcurrentClientService {
@@ -37,16 +34,7 @@ public class ConcurrentClientServiceImpl implements IConcurrentClientService {
                 clientFactory = BeanUtil.getBean(NettyClientFactoryImpl.class);
                 break;
         }
-
-        byte[] bytes;
-        if (BYTE.equals(dataConfig.getType())) {
-            int dataSize = dataConfig.getSize();
-            bytes = DataUtil.assembleData(dataSize);
-        } else {
-            String filePath = dataConfig.getPath();
-            bytes = DataUtil.assembleData(filePath);
-        }
-        clientFactory.sendMsg(bytes);
+        clientFactory.sendMsg();
     }
 
 }

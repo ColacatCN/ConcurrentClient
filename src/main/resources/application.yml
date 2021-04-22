@@ -1,13 +1,25 @@
 global-config:
   client-config:
-    type: http
+    type: socket
     amount: 10
     proxyIP: 127.0.0.1
     proxyPort: 8081
     appIP: 127.0.0.1
     appPort: 10727
-
   data-config:
     type: byte
     path:
     size: 1024
+  channel-config:
+    type: single
+
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+  producer:
+    acks: 1
+    batch-size: 131072
+    linger.ms: 100
+    buffer-memory: 33554432
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer

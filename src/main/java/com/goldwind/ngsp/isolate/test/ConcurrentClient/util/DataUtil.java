@@ -11,19 +11,29 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 public class DataUtil {
 
+    private static final byte[] GROUP_ID = getRandomByteArray();
+
     public static byte[] assembleData(int length) {
-        byte[] groupId = getRandomByteArray();
         byte[] msgId = getRandomByteArray();
-        byte[] payload = getRandomByteArray(length - groupId.length - msgId.length);
-        return copyArray(groupId, msgId, payload, length);
+        byte[] payload = getRandomByteArray(length - GROUP_ID.length - msgId.length);
+        return copyArray(msgId, payload, length);
     }
 
     public static byte[] assembleData(String filePath) {
-        byte[] groupId = getRandomByteArray();
         byte[] msgId = getRandomByteArray();
         byte[] payload = fileToByteArray(filePath);
-        int totalLength = groupId.length + msgId.length + payload.length;
-        return copyArray(groupId, msgId, payload, totalLength);
+        int totalLength = GROUP_ID.length + msgId.length + payload.length;
+        return copyArray(msgId, payload, totalLength);
+    }
+
+    public static long getGroupId() {
+        return byteArrayToInt(GROUP_ID);
+    }
+
+    public static long getMsgId(byte[] data) {
+        byte[] msgId = new byte[4];
+        System.arraycopy(data, 4, msgId, 0, 4);
+        return byteArrayToInt(msgId);
     }
 
     private static byte[] fileToByteArray(String filePath) {
@@ -42,11 +52,11 @@ public class DataUtil {
         return payload;
     }
 
-    private static byte[] copyArray(byte[] groupId, byte[] msgId, byte[] payload, int length) {
+    private static byte[] copyArray(byte[] msgId, byte[] payload, int length) {
         byte[] data = new byte[length];
-        System.arraycopy(groupId, 0, data, 0, groupId.length);
-        System.arraycopy(msgId, 0, data, groupId.length, msgId.length);
-        System.arraycopy(payload, 0, data, groupId.length + msgId.length, payload.length);
+        System.arraycopy(GROUP_ID, 0, data, 0, GROUP_ID.length);
+        System.arraycopy(msgId, 0, data, GROUP_ID.length, msgId.length);
+        System.arraycopy(payload, 0, data, GROUP_ID.length + msgId.length, payload.length);
         return data;
     }
 

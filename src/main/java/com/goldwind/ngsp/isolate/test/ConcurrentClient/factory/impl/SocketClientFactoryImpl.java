@@ -1,7 +1,12 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl;
 
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.exception.ClientException;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.AbstractClientFactory;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.DataUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.DataInputStream;
@@ -12,11 +17,17 @@ import java.net.Proxy;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
+import static com.goldwind.ngsp.isolate.test.ConcurrentClient.consts.ConcurrentClientConst.KAFKA_TOPIC;
 
 @Component
 @Slf4j
 public class SocketClientFactoryImpl extends AbstractClientFactory {
+
+    @Autowired
+    private KafkaTemplate<String, KafkaMessage> kafkaTemplate;
 
     private final List<Socket> socketList = new ArrayList<>();
 
@@ -29,24 +40,31 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
     }
 
     @Override
-    public void sendMsg(Object msg) throws Exception {
+    public void sendMsg() throws Exception {
         initializeClientFactory();
         for (Socket socket : socketList) {
             executorService.submit(() -> {
                 for (; ; ) {
                     try (DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                          DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
-                        byte[] bytes = (byte[]) msg;
+                        // 发送数据
+                        byte[] bytes = getMsg();
                         if (log.isDebugEnabled()) {
-                            log.debug(Thread.currentThread().getName() + ": " + Arrays.toString(bytes));
+                            log.debug(Thread.currentThread().getName() + "发送数据: " + Arrays.toString(bytes));
                         }
-                        // TODO: 埋点
                         outputStream.write(bytes);
+                        kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), new KafkaMessage(DataUtil.getGroupId(), channelType, DataUtil.getMsgId(bytes), null, new Date()));
 
+                        // 接收数据
                         byte[] response = new byte[bytes.length];
                         int numOfBytes = inputStream.read(response);
                         if (numOfBytes != -1) {
-                            // TODO: 埋点
+                            if (log.isDebugEnabled()) {
+                                log.debug(Thread.currentThread().getName() + "接收数据: " + Arrays.toString(bytes));
+                            }
+                            kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), new KafkaMessage(DataUtil.getGroupId(), channelType, DataUtil.getMsgId(bytes), null, new Date()));
+                        } else {
+                            throw new ClientException("Socket 客户端没有收到响应数据");
                         }
                     }
                 }

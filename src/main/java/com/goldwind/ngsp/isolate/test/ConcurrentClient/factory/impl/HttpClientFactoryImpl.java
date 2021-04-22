@@ -40,12 +40,12 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
     }
 
     @Override
-    public void sendMsg(Object msg) throws Exception {
+    public void sendMsg() throws Exception {
         initializeClientFactory();
         for (OkHttpClient httpClient : httpClientList) {
             executorService.submit(() -> {
                 for (; ; ) {
-                    byte[] bytes = (byte[]) msg;
+                    byte[] bytes = getMsg();
                     if (log.isDebugEnabled()) {
                         log.debug(Thread.currentThread().getName() + ": " + Arrays.toString(bytes));
                     }
