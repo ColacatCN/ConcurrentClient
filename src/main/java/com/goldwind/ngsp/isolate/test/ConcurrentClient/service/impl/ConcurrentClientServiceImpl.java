@@ -1,7 +1,6 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.service.impl;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.ClientConfig;
-import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.DataConfig;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.AbstractClientFactory;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.HttpClientFactoryImpl;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.NettyClientFactoryImpl;
@@ -16,9 +15,6 @@ public class ConcurrentClientServiceImpl implements IConcurrentClientService {
 
     @Autowired
     private ClientConfig clientConfig;
-
-    @Autowired
-    private DataConfig dataConfig;
 
     @Override
     public void start() throws Exception {

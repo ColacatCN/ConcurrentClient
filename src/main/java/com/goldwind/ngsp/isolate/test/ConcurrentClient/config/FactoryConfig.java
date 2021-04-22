@@ -4,10 +4,10 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties(prefix = "global-config")
+@ConfigurationProperties(prefix = "factory-config")
 @Configuration
 @Data
-public class GlobalConfig {
+public class FactoryConfig {
 
     private ClientConfig clientConfig;
 

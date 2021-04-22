@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.assertNotNull;
 
 @Slf4j
-public class GlobalConfigTest extends ApplicationTests {
+public class FactoryConfigTest extends ApplicationTests {
 
     @Autowired
-    private GlobalConfig globalConfig;
+    private FactoryConfig factoryConfig;
 
     @Autowired
     private ClientConfig clientConfig;
@@ -21,8 +21,8 @@ public class GlobalConfigTest extends ApplicationTests {
 
     @Test
     public void test() {
-        assertNotNull(globalConfig);
-        log.info(globalConfig.toString());
+        assertNotNull(factoryConfig);
+        log.info(factoryConfig.toString());
         assertNotNull(clientConfig);
         log.info(clientConfig.toString());
         assertNotNull(dataConfig);

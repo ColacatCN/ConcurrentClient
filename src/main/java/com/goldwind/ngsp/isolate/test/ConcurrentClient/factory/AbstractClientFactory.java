@@ -26,7 +26,7 @@ public abstract class AbstractClientFactory {
     @Autowired
     protected DataConfig dataConfig;
 
-    @Value("${global-config.channel-config.type}")
+    @Value("${factory-config.channel-config.type}")
     protected ChannelTypeEnum channelType;
 
     protected ExecutorService executorService;

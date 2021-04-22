@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldwind.ngsp.isolate.test.ConcurrentClient.dao.KafkaMessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="group_id" jdbcType="BIGINT" property="groupId"/>
+        <result column="channel_type" jdbcType="CHAR" property="channelType"/>
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId"/>
+        <result column="msg_id" jdbcType="BIGINT" property="msgId"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, group_id, channel_type, channel_id, msg_id, update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from isolate_test
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from isolate_test
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
+        insert into isolate_test (id, group_id, channel_type,
+        channel_id, msg_id, update_time
+        )
+        values (#{id,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, #{channelType,jdbcType=CHAR},
+        #{channelId,jdbcType=VARCHAR}, #{msgId,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
+        insert into isolate_test
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">
+                group_id,
+            </if>
+            <if test="channelType != null">
+                channel_type,
+            </if>
+            <if test="channelId != null">
+                channel_id,
+            </if>
+            <if test="msgId != null">
+                msg_id,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">
+                #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="channelType != null">
+                #{channelType,jdbcType=CHAR},
+            </if>
+            <if test="channelId != null">
+                #{channelId,jdbcType=VARCHAR},
+            </if>
+            <if test="msgId != null">
+                #{msgId,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
+        update isolate_test
+        <set>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="channelType != null">
+                channel_type = #{channelType,jdbcType=CHAR},
+            </if>
+            <if test="channelId != null">
+                channel_id = #{channelId,jdbcType=VARCHAR},
+            </if>
+            <if test="msgId != null">
+                msg_id = #{msgId,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
+        update isolate_test
+        set group_id = #{groupId,jdbcType=BIGINT},
+        channel_type = #{channelType,jdbcType=CHAR},
+        channel_id = #{channelId,jdbcType=VARCHAR},
+        msg_id = #{msgId,jdbcType=BIGINT},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

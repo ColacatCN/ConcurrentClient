@@ -53,7 +53,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                             log.debug(Thread.currentThread().getName() + "发送数据: " + Arrays.toString(bytes));
                         }
                         outputStream.write(bytes);
-                        kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), new KafkaMessage(DataUtil.getGroupId(), channelType, DataUtil.getMsgId(bytes), null, new Date()));
+                        kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), new KafkaMessage(DataUtil.getGroupId(), channelType.getKey(), null, DataUtil.getMsgId(bytes), new Date()));
 
                         // 接收数据
                         byte[] response = new byte[bytes.length];
@@ -62,7 +62,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                             if (log.isDebugEnabled()) {
                                 log.debug(Thread.currentThread().getName() + "接收数据: " + Arrays.toString(bytes));
                             }
-                            kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), new KafkaMessage(DataUtil.getGroupId(), channelType, DataUtil.getMsgId(bytes), null, new Date()));
+                            kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), new KafkaMessage(DataUtil.getGroupId(), channelType.getKey(), null, DataUtil.getMsgId(bytes), new Date()));
                         } else {
                             throw new ClientException("Socket 客户端没有收到响应数据");
                         }
