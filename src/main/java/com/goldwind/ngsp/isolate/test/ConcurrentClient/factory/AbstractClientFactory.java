@@ -4,6 +4,7 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.ClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +21,7 @@ public abstract class AbstractClientFactory {
 
     protected CountDownLatch latch;
 
-    protected void initializeClientFactory() {
+    protected void initializeClientFactory() throws IOException {
         String clientType = clientConfig.getType().getKey().toLowerCase();
         int amountOfClient = clientConfig.getAmount();
         executorService = new ThreadPoolExecutor(amountOfClient, amountOfClient,
@@ -34,7 +35,7 @@ public abstract class AbstractClientFactory {
         }
     }
 
-    protected abstract void createClient(String proxyIP, int proxyPort);
+    protected abstract void createClient(String proxyIP, int proxyPort) throws IOException;
 
     public abstract void sendMsg(Object msg) throws Exception;
 

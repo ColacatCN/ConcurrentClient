@@ -78,6 +78,7 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
                     if (log.isDebugEnabled()) {
                         log.debug(Thread.currentThread().getName() + ": " + Arrays.toString(bytes));
                     }
+                    // TODO: 埋点
                     channel.writeAndFlush(msg);
                 }
             });

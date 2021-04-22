@@ -1,6 +1,5 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.AbstractClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
@@ -38,13 +37,11 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
                 .proxy(socks5Proxy)
                 .build();
         httpClientList.add(httpClient);
-        latch.countDown();
     }
 
     @Override
     public void sendMsg(Object msg) throws Exception {
         initializeClientFactory();
-        latch.await();
         for (OkHttpClient httpClient : httpClientList) {
             executorService.submit(() -> {
                 for (; ; ) {
@@ -52,6 +49,7 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
                     if (log.isDebugEnabled()) {
                         log.debug(Thread.currentThread().getName() + ": " + Arrays.toString(bytes));
                     }
+                    // TODO: 埋点
                     Request request = new Request.Builder()
                             .url(String.format(HTTP_CLIENT_URL, clientConfig.getAppIP(), clientConfig.getAppPort()))
                             .post(RequestBody.create(MediaType.parse("text/plain"), bytes))
@@ -64,7 +62,7 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
 
                         @Override
                         public void onResponse(Call call, Response response) {
-                            log.info(response.toString());
+                            // TODO: 埋点
                         }
                     });
                 }
