@@ -15,7 +15,7 @@ public class UniversalHandler extends SimpleChannelInboundHandler<byte[]> {
     private final KafkaUtil kafkaUtil = BeanUtil.getBean(KafkaUtil.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, byte[] bytes) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, byte[] bytes) {
         if (log.isDebugEnabled()) {
             log.debug(Thread.currentThread().getName() + " 接收数据: " + Arrays.toString(bytes));
         }

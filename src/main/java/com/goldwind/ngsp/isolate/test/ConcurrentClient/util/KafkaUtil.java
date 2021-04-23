@@ -33,11 +33,11 @@ public class KafkaUtil {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void send(byte[] bytes) throws JsonProcessingException {
+    public void send(byte[] bytes) {
         send(bytes, null);
     }
 
-    public void send(byte[] bytes, String channelId) throws JsonProcessingException {
+    public void send(byte[] bytes, String channelId) {
         KafkaMessage kafkaMessage;
         if (channelId != null) {
             kafkaMessage = new KafkaMessage(dataUtil.getGroupId(), channelType.getKey(), channelId, dataUtil.getMsgId(bytes), DateUtil.now());
@@ -45,22 +45,26 @@ public class KafkaUtil {
             kafkaMessage = new KafkaMessage(dataUtil.getGroupId(), channelType.getKey(), Thread.currentThread().getName(), dataUtil.getMsgId(bytes), DateUtil.now());
         }
 
-        kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), objectMapper.writeValueAsString(kafkaMessage))
-                .addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+        try {
+            kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), objectMapper.writeValueAsString(kafkaMessage))
+                    .addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        log.error("Kafka 消息发送失败: " + throwable.getMessage(), throwable);
-                    }
-
-                    @Override
-                    public void onSuccess(SendResult<String, String> sendResult) {
-                        if (log.isDebugEnabled()) {
-                            log.debug(sendResult.toString());
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            log.error("Kafka 消息发送失败: " + throwable.getMessage(), throwable);
                         }
-                    }
 
-                });
+                        @Override
+                        public void onSuccess(SendResult<String, String> sendResult) {
+                            if (log.isDebugEnabled()) {
+                                log.debug(sendResult.toString());
+                            }
+                        }
+
+                    });
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
 }
