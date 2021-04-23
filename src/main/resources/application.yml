@@ -5,14 +5,17 @@ spring:
     password: "12345678"
     url: jdbc:mysql://localhost:3306/goldwind?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
   kafka:
-    bootstrap-servers: 127.0.0.1:9092
-  producer:
-    acks: 1
-    batch-size: 131072
-    linger.ms: 100
-    buffer-memory: 33554432
-    key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    bootstrap-servers: 10.80.12.82:9092
+    producer:
+      acks: 1
+      batch-size: 131072
+      linger.ms: 100
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: concurrent-client
+      enable-auto-commit: true
 
 mybatis:
   configuration:

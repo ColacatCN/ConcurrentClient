@@ -32,7 +32,7 @@
         channel_id, msg_id, update_time
         )
         values (#{id,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, #{channelType,jdbcType=CHAR},
-        #{channelId,jdbcType=VARCHAR}, #{msgId,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}
+        #{channelId,jdbcType=VARCHAR}, #{msgId,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}
         )
     </insert>
 
@@ -69,7 +69,7 @@
                 #{msgId,jdbcType=BIGINT},
             </if>
             <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>
@@ -91,7 +91,7 @@
                 msg_id = #{msgId,jdbcType=BIGINT},
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
+                update_time = #{updateTime,jdbcType=BIGINT},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -103,7 +103,7 @@
         channel_type = #{channelType,jdbcType=CHAR},
         channel_id = #{channelId,jdbcType=VARCHAR},
         msg_id = #{msgId,jdbcType=BIGINT},
-        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        update_time = #{updateTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 

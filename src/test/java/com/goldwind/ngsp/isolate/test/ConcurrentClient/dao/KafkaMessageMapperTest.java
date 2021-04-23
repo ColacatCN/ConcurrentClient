@@ -2,10 +2,9 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.dao;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.ApplicationTests;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.DateUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 public class KafkaMessageMapperTest extends ApplicationTests {
 
@@ -14,7 +13,7 @@ public class KafkaMessageMapperTest extends ApplicationTests {
 
     @Test
     public void testInsertSelective() {
-        KafkaMessage kafkaMessage = new KafkaMessage(1L, "Single", "1", 1L, new Date());
+        KafkaMessage kafkaMessage = new KafkaMessage(1L, "Single", "1", 1L, DateUtil.now());
         mapper.insertSelective(kafkaMessage);
     }
 
