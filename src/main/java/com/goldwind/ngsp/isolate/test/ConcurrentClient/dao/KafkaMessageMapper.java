@@ -2,6 +2,8 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.dao;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
 
+import java.util.List;
+
 public interface KafkaMessageMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -15,5 +17,9 @@ public interface KafkaMessageMapper {
     int updateByPrimaryKeySelective(KafkaMessage record);
 
     int updateByPrimaryKey(KafkaMessage record);
+
+    List<KafkaMessage> selectByGroupId(Long groupId);
+
+    List<KafkaMessage> selectByGroupIdAndChannelId(Long groupId, String channelId);
 
 }

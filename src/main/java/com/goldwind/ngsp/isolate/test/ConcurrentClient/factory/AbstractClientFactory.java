@@ -1,9 +1,7 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.ClientConfig;
-import com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ChannelTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,9 +16,6 @@ public abstract class AbstractClientFactory {
 
     @Autowired
     protected ClientConfig clientConfig;
-
-    @Value("${factory-config.channel-config.type}")
-    protected ChannelTypeEnum channelType;
 
     protected ExecutorService executorService;
 

@@ -1,13 +1,13 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class KafkaMessage {
+
+    private Long id;
 
     private Long groupId;
 
@@ -18,5 +18,13 @@ public class KafkaMessage {
     private Long msgId;
 
     private Long updateTime;
+
+    public KafkaMessage(Long groupId, String channelType, String channelId, Long msgId, Long updateTime) {
+        this.groupId = groupId;
+        this.channelType = channelType;
+        this.channelId = channelId;
+        this.msgId = msgId;
+        this.updateTime = updateTime;
+    }
 
 }

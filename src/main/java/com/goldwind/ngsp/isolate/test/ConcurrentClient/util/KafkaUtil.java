@@ -34,11 +34,17 @@ public class KafkaUtil {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void send(byte[] bytes) throws JsonProcessingException {
-        KafkaMessage kafkaMessage = new KafkaMessage(dataUtil.getGroupId(),
-                channelType.getKey(),
-                Thread.currentThread().getName(),
-                dataUtil.getMsgId(bytes),
-                DateUtil.now());
+        send(bytes, null);
+    }
+
+    public void send(byte[] bytes, String channelId) throws JsonProcessingException {
+        KafkaMessage kafkaMessage;
+        if (channelId != null) {
+            kafkaMessage = new KafkaMessage(dataUtil.getGroupId(), channelType.getKey(), channelId, dataUtil.getMsgId(bytes), DateUtil.now());
+        } else {
+            kafkaMessage = new KafkaMessage(dataUtil.getGroupId(), channelType.getKey(), Thread.currentThread().getName(), dataUtil.getMsgId(bytes), DateUtil.now());
+        }
+
         kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), objectMapper.writeValueAsString(kafkaMessage))
                 .addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
@@ -53,6 +59,7 @@ public class KafkaUtil {
                             log.debug(sendResult.toString());
                         }
                     }
+
                 });
     }
 

@@ -107,4 +107,19 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <select id="selectByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from isolate_test
+        where group_id = #{groupId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByGroupIdAndChannelId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from isolate_test
+        where group_id = #{groupId,jdbcType=BIGINT}
+        and channel_id = #{channelId,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

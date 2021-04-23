@@ -88,7 +88,8 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
                         log.debug(Thread.currentThread().getName() + " 发送数据: " + Arrays.toString(bytes));
                     }
                     channel.writeAndFlush(bytes);
-                    kafkaUtil.send(bytes);
+                    String channelId = channel.id().asLongText();
+                    kafkaUtil.send(bytes, channelId);
                 }
             });
         }
