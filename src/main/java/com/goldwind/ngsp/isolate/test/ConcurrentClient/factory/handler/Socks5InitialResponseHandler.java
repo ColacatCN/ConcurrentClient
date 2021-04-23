@@ -14,13 +14,13 @@ import io.netty.handler.codec.socksx.v5.Socks5InitialRequest;
 
 public class Socks5InitialResponseHandler extends SimpleChannelInboundHandler<DefaultSocks5InitialResponse> {
 
-    private final String ip;
+    private final String appIP;
 
-    private final int port;
+    private final int appPort;
 
-    public Socks5InitialResponseHandler(String ip, int port) {
-        this.ip = ip;
-        this.port = port;
+    public Socks5InitialResponseHandler(String appIP, int appPort) {
+        this.appIP = appIP;
+        this.appPort = appPort;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Socks5InitialResponseHandler extends SimpleChannelInboundHandler<De
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5InitialResponse socks5InitialResponse) throws Exception {
         if (socks5InitialResponse.decoderResult().isSuccess()) {
-            Socks5CommandRequest socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.CONNECT, Socks5AddressType.IPv4, ip, port);
+            Socks5CommandRequest socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.CONNECT, Socks5AddressType.IPv4, appIP, appPort);
             ctx.writeAndFlush(socks5CommandRequest);
         } else {
             throw new ClientException("Socks5InitialResponse 解码失败");
