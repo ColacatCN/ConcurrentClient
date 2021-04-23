@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.ApplicationTests;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.goldwind.ngsp.isolate.test.ConcurrentClient.consts.ConcurrentClientConst.KAFKA_TOPIC;
 
+@Ignore
 @Slf4j
 public class KafkaProducerTest extends ApplicationTests {
 

@@ -6,6 +6,7 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.ApplicationTests;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.dao.KafkaMessageMapper;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+@Ignore
 @Component
 @Slf4j
 public class KafkaConsumerTest extends ApplicationTests {

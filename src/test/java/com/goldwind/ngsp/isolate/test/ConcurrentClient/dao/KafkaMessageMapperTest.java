@@ -3,6 +3,7 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.dao;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.ApplicationTests;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.DateUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @Transactional
 public class KafkaMessageMapperTest extends ApplicationTests {
 

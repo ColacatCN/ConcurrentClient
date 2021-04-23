@@ -1,11 +1,13 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.service;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.ApplicationTests;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
 
+@Ignore
 public class IConcurrentClientServiceTest extends ApplicationTests {
 
     @Autowired
