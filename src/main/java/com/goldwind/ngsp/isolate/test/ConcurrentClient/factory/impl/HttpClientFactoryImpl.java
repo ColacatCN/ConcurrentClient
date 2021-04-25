@@ -35,8 +35,8 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
     private final List<OkHttpClient> httpClientList = new ArrayList<>();
 
     @Override
-    protected void createClient(String proxyIP, int proxyPort) {
-        Proxy socks5Proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(proxyIP, proxyPort));
+    protected void createClient() {
+        Proxy socks5Proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(getProxyIP(), getProxyPort()));
         OkHttpClient httpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(10 * 60 * 1000, TimeUnit.MILLISECONDS)
                 .readTimeout(10 * 60 * 1000, TimeUnit.MILLISECONDS)
@@ -58,7 +58,7 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
                     }
                     kafkaUtil.send(bytes);
                     Request request = new Request.Builder()
-                            .url(String.format(HTTP_CLIENT_URL, clientConfig.getAppIP(), clientConfig.getAppPort()))
+                            .url(String.format(HTTP_CLIENT_URL, getAppIP(), getAppPort()))
                             .post(RequestBody.create(MediaType.parse("text/plain"), bytes))
                             .build();
                     httpClient.newCall(request).enqueue(new Callback() {

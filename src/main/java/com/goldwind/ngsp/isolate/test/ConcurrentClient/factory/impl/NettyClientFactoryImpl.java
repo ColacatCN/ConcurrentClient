@@ -8,7 +8,6 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.DataUtil;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.KafkaUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -35,9 +34,10 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
     private final List<Channel> channelList = new ArrayList<>();
 
     @Override
-    protected void createClient(String proxyIP, int proxyPort) {
+    protected void createClient() {
         Bootstrap bootstrap = new Bootstrap();
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+
         try {
             bootstrap.group(workerGroup)
                     .channel(NioSocketChannel.class)
@@ -50,21 +50,18 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
 
                             // 2. 解码处理 Socks5InitialResponse
                             pipeline.addLast(new Socks5InitialResponseDecoder());
-                            pipeline.addLast(new Socks5InitialResponseHandler(clientConfig.getAppIP(), clientConfig.getAppPort()));
+                            pipeline.addLast(new Socks5InitialResponseHandler(getAppIP(), getAppPort()));
 
                             // 3. 解码处理 Socks5CommandResponse
                             pipeline.addLast(new Socks5CommandResponseDecoder());
-                            pipeline.addLast(new Socks5CommandResponseHandler(latch));
+                            pipeline.addLast(new Socks5CommandResponseHandler(channelList, latch));
 
                             // 4. 通用解码器和 handler
                             pipeline.addLast(new ByteArrayDecoder());
                             pipeline.addLast(new UniversalHandler());
                         }
                     });
-
-            ChannelFuture channelFuture = bootstrap.connect(proxyIP, proxyPort).sync();
-            channelList.add(channelFuture.channel());
-            log.info("Succeed to connect to inner proxy {}:{}.", proxyIP, proxyPort);
+            bootstrap.connect(getProxyIP(), getProxyPort()).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error(e.getMessage(), e);

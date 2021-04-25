@@ -4,12 +4,10 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.ApplicationTests;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.service.impl.ConcurrentClientServiceImpl;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.service.impl.KafkaClientServiceImpl;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.BeanUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-@Ignore
 public class IClientServiceTest extends ApplicationTests {
 
     @Test
