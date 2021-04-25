@@ -14,7 +14,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
-import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.socksx.v5.Socks5ClientEncoder;
 import io.netty.handler.codec.socksx.v5.Socks5CommandResponseDecoder;
 import io.netty.handler.codec.socksx.v5.Socks5InitialResponseDecoder;
@@ -48,7 +47,6 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
                             ChannelPipeline pipeline = channel.pipeline();
                             // 1. 编码器
                             pipeline.addFirst(Socks5ClientEncoder.DEFAULT);
-                            pipeline.addFirst(new ByteArrayEncoder());
 
                             // 2. 解码处理 Socks5InitialResponse
                             pipeline.addLast(new Socks5InitialResponseDecoder());

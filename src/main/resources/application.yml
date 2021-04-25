@@ -26,6 +26,7 @@ mybatis:
 factory-config:
   client-config:
     type: netty
+    protocol: tcp
     amount: 10
     proxyIP: 127.0.0.1
     proxyPort: 8081

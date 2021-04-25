@@ -1,6 +1,7 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.handler;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.exception.ClientException;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.codec.MyEncoder2;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
@@ -24,6 +25,7 @@ public class Socks5CommandResponseHandler extends SimpleChannelInboundHandler<De
             if (Socks5CommandStatus.SUCCESS.equals(socks5CommandResponse.status())) {
                 latch.countDown();
                 log.info("SOCKS5 建立成功");
+                ctx.channel().pipeline().addFirst(new MyEncoder2());
             } else {
                 throw new ClientException("SOCKS5 建立失败");
             }
