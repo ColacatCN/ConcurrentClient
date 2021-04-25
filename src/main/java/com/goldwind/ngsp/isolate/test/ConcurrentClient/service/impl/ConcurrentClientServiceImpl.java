@@ -5,13 +5,15 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.AbstractClientFac
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.HttpClientFactoryImpl;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.NettyClientFactoryImpl;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl.SocketClientFactoryImpl;
-import com.goldwind.ngsp.isolate.test.ConcurrentClient.service.IConcurrentClientService;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.service.IClientService;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.BeanUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ConcurrentClientServiceImpl implements IConcurrentClientService {
+@Slf4j
+public class ConcurrentClientServiceImpl implements IClientService {
 
     @Autowired
     private ClientConfig clientConfig;
@@ -30,6 +32,8 @@ public class ConcurrentClientServiceImpl implements IConcurrentClientService {
                 clientFactory = BeanUtil.getBean(NettyClientFactoryImpl.class);
                 break;
         }
+
+        log.info("成功启动 ConcurrentClientService");
         clientFactory.sendMsg();
     }
 
