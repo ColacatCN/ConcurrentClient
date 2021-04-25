@@ -44,14 +44,29 @@ public class DataUtil {
     private static byte[] assembleData(int length) {
         byte[] msgId = getRandomByteArray();
         byte[] payload = getRandomByteArray(length - groupId.length - msgId.length);
-        return copyArray(msgId, payload, length);
+        return copyArray(groupId, msgId, payload);
     }
 
     private static byte[] assembleData(String filePath) {
         byte[] msgId = getRandomByteArray();
         byte[] payload = fileToByteArray(filePath);
-        int totalLength = groupId.length + msgId.length + payload.length;
-        return copyArray(msgId, payload, totalLength);
+        return copyArray(groupId, msgId, payload);
+    }
+
+    public static byte[] copyArray(byte[] groupId, byte[] msgId, byte[] payload) {
+        int length = groupId.length + msgId.length + payload.length;
+        byte[] data = new byte[length];
+        System.arraycopy(groupId, 0, data, 0, groupId.length);
+        System.arraycopy(msgId, 0, data, groupId.length, msgId.length);
+        System.arraycopy(payload, 0, data, groupId.length + msgId.length, payload.length);
+        return data;
+    }
+
+    public static byte[] intToByteArray(int i) {
+        byte[] bytes = new byte[2];
+        bytes[0] = (byte) ((i & 0x0000ff00) >> 8);
+        bytes[1] = (byte) (i & 0x000000ff);
+        return bytes;
     }
 
     private static byte[] fileToByteArray(String filePath) {
@@ -68,14 +83,6 @@ public class DataUtil {
             log.error(e.getMessage(), e);
         }
         return payload;
-    }
-
-    private static byte[] copyArray(byte[] msgId, byte[] payload, int length) {
-        byte[] data = new byte[length];
-        System.arraycopy(groupId, 0, data, 0, groupId.length);
-        System.arraycopy(msgId, 0, data, groupId.length, msgId.length);
-        System.arraycopy(payload, 0, data, groupId.length + msgId.length, payload.length);
-        return data;
     }
 
     private static byte[] getRandomByteArray() {
