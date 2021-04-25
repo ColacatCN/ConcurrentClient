@@ -23,9 +23,6 @@ public class KafkaUtil {
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
-    private DataUtil dataUtil;
-
-    @Autowired
     private ClientConfig clientConfig;
 
     @Value("${factory-config.channel-config.type}")
@@ -40,9 +37,9 @@ public class KafkaUtil {
     public void send(byte[] bytes, String channelId) {
         KafkaMessage kafkaMessage;
         if (channelId != null) {
-            kafkaMessage = new KafkaMessage(dataUtil.getGroupId(), channelType.getKey(), channelId, dataUtil.getMsgId(bytes), DateUtil.now());
+            kafkaMessage = new KafkaMessage(DataUtil.getGroupId(), channelType.getKey(), channelId, DataUtil.getMsgId(bytes), DateUtil.now());
         } else {
-            kafkaMessage = new KafkaMessage(dataUtil.getGroupId(), channelType.getKey(), Thread.currentThread().getName(), dataUtil.getMsgId(bytes), DateUtil.now());
+            kafkaMessage = new KafkaMessage(DataUtil.getGroupId(), channelType.getKey(), Thread.currentThread().getName(), DataUtil.getMsgId(bytes), DateUtil.now());
         }
 
         try {

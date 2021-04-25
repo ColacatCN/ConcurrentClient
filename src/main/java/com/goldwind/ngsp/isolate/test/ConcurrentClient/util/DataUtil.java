@@ -2,8 +2,6 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.util;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.DataConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -14,16 +12,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.DataTypeEnum.BYTE;
 import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.DataTypeEnum.FILE;
 
-@Component
 @Slf4j
 public class DataUtil {
 
-    @Autowired
-    protected DataConfig dataConfig;
+    private static final DataConfig dataConfig = BeanUtil.getBean(DataConfig.class);
 
-    private final byte[] groupId = getRandomByteArray();
+    private static final byte[] groupId = getRandomByteArray();
 
-    public byte[] getMsg() {
+    public static byte[] getMsg() {
         byte[] bytes = null;
         if (BYTE.equals(dataConfig.getType())) {
             int dataSize = dataConfig.getSize();
@@ -35,30 +31,30 @@ public class DataUtil {
         return bytes;
     }
 
-    public byte[] assembleData(int length) {
+    public static long getGroupId() {
+        return byteArrayToInt(groupId);
+    }
+
+    public static long getMsgId(byte[] data) {
+        byte[] msgId = new byte[4];
+        System.arraycopy(data, 4, msgId, 0, 4);
+        return byteArrayToInt(msgId);
+    }
+
+    private static byte[] assembleData(int length) {
         byte[] msgId = getRandomByteArray();
         byte[] payload = getRandomByteArray(length - groupId.length - msgId.length);
         return copyArray(msgId, payload, length);
     }
 
-    public byte[] assembleData(String filePath) {
+    private static byte[] assembleData(String filePath) {
         byte[] msgId = getRandomByteArray();
         byte[] payload = fileToByteArray(filePath);
         int totalLength = groupId.length + msgId.length + payload.length;
         return copyArray(msgId, payload, totalLength);
     }
 
-    public long getGroupId() {
-        return byteArrayToInt(groupId);
-    }
-
-    public long getMsgId(byte[] data) {
-        byte[] msgId = new byte[4];
-        System.arraycopy(data, 4, msgId, 0, 4);
-        return byteArrayToInt(msgId);
-    }
-
-    private byte[] fileToByteArray(String filePath) {
+    private static byte[] fileToByteArray(String filePath) {
         byte[] payload = null;
         try (InputStream inputStream = new FileInputStream(filePath);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -74,7 +70,7 @@ public class DataUtil {
         return payload;
     }
 
-    private byte[] copyArray(byte[] msgId, byte[] payload, int length) {
+    private static byte[] copyArray(byte[] msgId, byte[] payload, int length) {
         byte[] data = new byte[length];
         System.arraycopy(groupId, 0, data, 0, groupId.length);
         System.arraycopy(msgId, 0, data, groupId.length, msgId.length);
@@ -82,17 +78,17 @@ public class DataUtil {
         return data;
     }
 
-    private byte[] getRandomByteArray() {
+    private static byte[] getRandomByteArray() {
         return getRandomByteArray(4);
     }
 
-    private byte[] getRandomByteArray(int length) {
+    private static byte[] getRandomByteArray(int length) {
         byte[] byteArray = new byte[length];
         ThreadLocalRandom.current().nextBytes(byteArray);
         return byteArray;
     }
 
-    private int byteArrayToInt(byte[] byteArray) {
+    private static int byteArrayToInt(byte[] byteArray) {
         int value = 0;
         for (int i = 0; i < byteArray.length; i++) {
             int shift = (3 - i) * 8;

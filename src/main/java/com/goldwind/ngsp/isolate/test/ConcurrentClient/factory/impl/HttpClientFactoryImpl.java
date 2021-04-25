@@ -32,9 +32,6 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
     @Autowired
     private KafkaUtil kafkaUtil;
 
-    @Autowired
-    private DataUtil dataUtil;
-
     private final List<OkHttpClient> httpClientList = new ArrayList<>();
 
     @Override
@@ -55,7 +52,7 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
         for (OkHttpClient httpClient : httpClientList) {
             executorService.submit(() -> {
                 for (; ; ) {
-                    byte[] bytes = dataUtil.getMsg();
+                    byte[] bytes = DataUtil.getMsg();
                     if (log.isDebugEnabled()) {
                         log.debug(Thread.currentThread().getName() + " 发送数据: " + Arrays.toString(bytes));
                     }

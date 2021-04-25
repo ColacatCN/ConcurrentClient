@@ -25,9 +25,6 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
     @Autowired
     private KafkaUtil kafkaUtil;
 
-    @Autowired
-    private DataUtil dataUtil;
-
     private final List<Socket> socketList = new ArrayList<>();
 
     @Override
@@ -47,7 +44,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                      DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
                     for (; ; ) {
                         // 发送数据
-                        byte[] bytes = dataUtil.getMsg();
+                        byte[] bytes = DataUtil.getMsg();
                         if (log.isDebugEnabled()) {
                             log.debug(Thread.currentThread().getName() + " 发送数据: " + Arrays.toString(bytes));
                         }

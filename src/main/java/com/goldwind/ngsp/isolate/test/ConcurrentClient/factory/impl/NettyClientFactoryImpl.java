@@ -33,9 +33,6 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
     @Autowired
     private KafkaUtil kafkaUtil;
 
-    @Autowired
-    private DataUtil dataUtil;
-
     private final List<Channel> channelList = new ArrayList<>();
 
     @Override
@@ -83,7 +80,7 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
         for (Channel channel : channelList) {
             executorService.submit(() -> {
                 for (; ; ) {
-                    byte[] bytes = dataUtil.getMsg();
+                    byte[] bytes = DataUtil.getMsg();
                     if (log.isDebugEnabled()) {
                         log.debug(Thread.currentThread().getName() + " 发送数据: " + Arrays.toString(bytes));
                     }
