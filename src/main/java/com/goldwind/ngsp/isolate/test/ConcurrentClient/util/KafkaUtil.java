@@ -2,12 +2,9 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.ClientConfig;
-import com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ChannelTypeEnum;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
@@ -22,12 +19,6 @@ public class KafkaUtil {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
-    private ClientConfig clientConfig;
-
-    @Value("${factory-config.channel-config.type}")
-    protected ChannelTypeEnum channelType;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void send(byte[] bytes) {
@@ -37,13 +28,13 @@ public class KafkaUtil {
     public void send(byte[] bytes, String channelId) {
         KafkaMessage kafkaMessage;
         if (channelId != null) {
-            kafkaMessage = new KafkaMessage(DataUtil.getGroupId(), channelType.getKey(), channelId, DataUtil.getMsgId(bytes), DateUtil.now());
+            kafkaMessage = new KafkaMessage(DataUtil.getGroupId(), ConfigUtil.getChannelType().getKey(), channelId, DataUtil.getMsgId(bytes), DateUtil.now());
         } else {
-            kafkaMessage = new KafkaMessage(DataUtil.getGroupId(), channelType.getKey(), Thread.currentThread().getName(), DataUtil.getMsgId(bytes), DateUtil.now());
+            kafkaMessage = new KafkaMessage(DataUtil.getGroupId(), ConfigUtil.getChannelType().getKey(), Thread.currentThread().getName(), DataUtil.getMsgId(bytes), DateUtil.now());
         }
 
         try {
-            kafkaTemplate.send(KAFKA_TOPIC, clientConfig.getType().getKey(), objectMapper.writeValueAsString(kafkaMessage))
+            kafkaTemplate.send(KAFKA_TOPIC, ConfigUtil.getClientType().getKey(), objectMapper.writeValueAsString(kafkaMessage))
                     .addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
                         @Override

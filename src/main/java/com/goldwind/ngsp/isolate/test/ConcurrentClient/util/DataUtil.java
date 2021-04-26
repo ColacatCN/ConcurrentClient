@@ -41,18 +41,6 @@ public class DataUtil {
         return byteArrayToInt(msgId);
     }
 
-    private static byte[] assembleData(int length) {
-        byte[] msgId = getRandomByteArray();
-        byte[] payload = getRandomByteArray(length - groupId.length - msgId.length);
-        return copyArray(groupId, msgId, payload);
-    }
-
-    private static byte[] assembleData(String filePath) {
-        byte[] msgId = getRandomByteArray();
-        byte[] payload = fileToByteArray(filePath);
-        return copyArray(groupId, msgId, payload);
-    }
-
     public static byte[] copyArray(byte[] groupId, byte[] msgId, byte[] payload) {
         int length = groupId.length + msgId.length + payload.length;
         byte[] data = new byte[length];
@@ -67,6 +55,27 @@ public class DataUtil {
         bytes[0] = (byte) ((i & 0x0000ff00) >> 8);
         bytes[1] = (byte) (i & 0x000000ff);
         return bytes;
+    }
+
+    public static int byteArrayToInt(byte[] byteArray) {
+        int value = 0;
+        for (int i = 0; i < byteArray.length; i++) {
+            int shift = (3 - i) * 8;
+            value += (byteArray[i] & 0xFF) << shift;
+        }
+        return value;
+    }
+
+    private static byte[] assembleData(int length) {
+        byte[] msgId = getRandomByteArray();
+        byte[] payload = getRandomByteArray(length - groupId.length - msgId.length);
+        return copyArray(groupId, msgId, payload);
+    }
+
+    private static byte[] assembleData(String filePath) {
+        byte[] msgId = getRandomByteArray();
+        byte[] payload = fileToByteArray(filePath);
+        return copyArray(groupId, msgId, payload);
     }
 
     private static byte[] fileToByteArray(String filePath) {
@@ -93,15 +102,6 @@ public class DataUtil {
         byte[] byteArray = new byte[length];
         ThreadLocalRandom.current().nextBytes(byteArray);
         return byteArray;
-    }
-
-    private static int byteArrayToInt(byte[] byteArray) {
-        int value = 0;
-        for (int i = 0; i < byteArray.length; i++) {
-            int shift = (3 - i) * 8;
-            value += (byteArray[i] & 0xFF) << shift;
-        }
-        return value;
     }
 
 }

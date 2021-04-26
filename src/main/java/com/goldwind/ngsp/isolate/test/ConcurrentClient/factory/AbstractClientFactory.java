@@ -13,13 +13,14 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractClientFactory {
 
-    private final ClientConfig clientConfig = BeanUtil.getBean(ClientConfig.class);
+    private ClientConfig clientConfig;
 
     protected ExecutorService executorService;
 
     protected CountDownLatch latch;
 
     protected void initializeClientFactory() throws Exception {
+        clientConfig = BeanUtil.getBean(ClientConfig.class);
         String clientType = getClientType().getKey().toLowerCase();
         int amountOfClient = getClientAmount();
         executorService = new ThreadPoolExecutor(amountOfClient, amountOfClient,

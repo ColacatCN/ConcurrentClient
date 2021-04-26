@@ -28,10 +28,10 @@ factory-config:
     type: socket
     protocol: udp
     amount: 1
-    proxyIP: 127.0.0.1
-    proxyPort: 8081
-    appIP: 127.0.0.1
-    appPort: 10727
+    proxyIP: 10.80.31.181
+    proxyPort: 7070
+    appIP: 10.80.31.181
+    appPort: 8081
   data-config:
     type: byte
     path:

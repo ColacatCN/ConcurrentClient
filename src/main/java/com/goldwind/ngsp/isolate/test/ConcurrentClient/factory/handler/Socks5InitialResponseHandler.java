@@ -1,6 +1,7 @@
 package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.handler;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.exception.ClientException;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.ConfigUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
@@ -11,6 +12,8 @@ import io.netty.handler.codec.socksx.v5.Socks5AuthMethod;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.Socks5CommandType;
 import io.netty.handler.codec.socksx.v5.Socks5InitialRequest;
+
+import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ClientProtocolEnum.TCP;
 
 public class Socks5InitialResponseHandler extends SimpleChannelInboundHandler<DefaultSocks5InitialResponse> {
 
@@ -32,7 +35,12 @@ public class Socks5InitialResponseHandler extends SimpleChannelInboundHandler<De
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5InitialResponse socks5InitialResponse) throws Exception {
         if (socks5InitialResponse.decoderResult().isSuccess()) {
-            Socks5CommandRequest socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.CONNECT, Socks5AddressType.IPv4, appIP, appPort);
+            Socks5CommandRequest socks5CommandRequest;
+            if (TCP.equals(ConfigUtil.getClientProtocol())) {
+                socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.CONNECT, Socks5AddressType.IPv4, appIP, appPort);
+            } else {
+                socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.UDP_ASSOCIATE, Socks5AddressType.IPv4, appIP, appPort);
+            }
             ctx.writeAndFlush(socks5CommandRequest);
         } else {
             throw new ClientException("Socks5InitialResponse 解码失败");

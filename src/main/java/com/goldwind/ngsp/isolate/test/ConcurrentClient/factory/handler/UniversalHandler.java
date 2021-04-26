@@ -2,12 +2,15 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.handler;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.exception.ClientException;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.BeanUtil;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.ConfigUtil;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.KafkaUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+
+import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ChannelTypeEnum.DUAL;
 
 @Slf4j
 public class UniversalHandler extends SimpleChannelInboundHandler<byte[]> {
@@ -19,8 +22,11 @@ public class UniversalHandler extends SimpleChannelInboundHandler<byte[]> {
         if (log.isDebugEnabled()) {
             log.debug(Thread.currentThread().getName() + " 接收数据: " + Arrays.toString(bytes));
         }
-        String channelId = ctx.channel().id().asLongText();
-        kafkaUtil.send(bytes, channelId);
+
+        if (DUAL.equals(ConfigUtil.getChannelType())) {
+            String channelId = ctx.channel().id().asLongText();
+            kafkaUtil.send(bytes, channelId);
+        }
     }
 
     @Override

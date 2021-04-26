@@ -14,14 +14,14 @@ public class IClientServiceTest extends ApplicationTests {
     public void testConcurrentClientServiceImpl() throws Exception {
         IClientService clientService = BeanUtil.getBean(ConcurrentClientServiceImpl.class);
         clientService.start();
-        TimeUnit.SECONDS.sleep(60);
+        TimeUnit.SECONDS.sleep(300);
     }
 
     @Test
     public void testKafkaClientServiceImpl() throws Exception {
         IClientService clientService = BeanUtil.getBean(KafkaClientServiceImpl.class);
         clientService.start();
-        TimeUnit.SECONDS.sleep(60);
+        TimeUnit.SECONDS.sleep(300);
     }
 
 }

@@ -16,12 +16,17 @@ public class FactoryConfigTest extends ApplicationTests {
     @Autowired
     private DataConfig dataConfig;
 
+    @Autowired
+    private ChannelConfig channelConfig;
+
     @Test
     public void test() {
         assertNotNull(clientConfig);
         log.info(clientConfig.toString());
         assertNotNull(dataConfig);
         log.info(dataConfig.toString());
+        assertNotNull(channelConfig);
+        log.info(channelConfig.toString());
     }
 
 }
