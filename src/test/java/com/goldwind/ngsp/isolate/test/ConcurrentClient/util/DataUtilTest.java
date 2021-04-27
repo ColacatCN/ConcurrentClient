@@ -36,17 +36,8 @@ public class DataUtilTest extends ApplicationTests {
         byte[] bytes = DataUtil.portToByteArray(6060);
         log.info(Arrays.toString(bytes));
 
-        int port = byteArrayToPort(new byte[]{bytes[0], bytes[1]});
+        int port = DataUtil.byteArrayToPort(new byte[]{bytes[0], bytes[1]});
         log.info("port = {}.", port);
-    }
-
-    private static int byteArrayToPort(byte[] byteArray) {
-        int value = 0;
-        for (int i = 0; i < byteArray.length; i++) {
-            int shift = (1 - i) * 8;
-            value += (byteArray[i] & 0xFF) << shift;
-        }
-        return value;
     }
 
 }

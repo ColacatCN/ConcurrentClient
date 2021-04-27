@@ -17,12 +17,8 @@ public class ClientConfig {
 
     private int amount;
 
-    private String proxyIP;
+    private RemoteConfig proxy;
 
-    private int proxyPort;
-
-    private String appIP;
-
-    private int appPort;
+    private RemoteConfig app;
 
 }

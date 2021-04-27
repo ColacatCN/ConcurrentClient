@@ -27,11 +27,11 @@ public class ConfigUtil {
     }
 
     public static String getAppIP() {
-        return CLIENT_CONFIG.getAppIP();
+        return CLIENT_CONFIG.getApp().getHostname();
     }
 
     public static int getAppPort() {
-        return CLIENT_CONFIG.getAppPort();
+        return CLIENT_CONFIG.getApp().getPort();
     }
 
     public static ChannelTypeEnum getChannelType() {

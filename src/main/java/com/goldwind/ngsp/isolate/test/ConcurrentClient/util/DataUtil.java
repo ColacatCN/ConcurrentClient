@@ -67,12 +67,7 @@ public class DataUtil {
     }
 
     public static int byteArrayToPort(byte[] byteArray) {
-        int value = 0;
-        for (int i = 0; i < byteArray.length; i++) {
-            int shift = (1 - i) * 8;
-            value += (byteArray[i] & 0xFF) << shift;
-        }
-        return value;
+        return ((byteArray[0] & 0xFF) << 8) + (byteArray[1] & 0xFF);
     }
 
     private static byte[] assembleData(int length) {

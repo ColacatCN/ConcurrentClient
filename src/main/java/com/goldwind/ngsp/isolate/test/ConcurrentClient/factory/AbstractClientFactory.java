@@ -52,19 +52,19 @@ public abstract class AbstractClientFactory {
     }
 
     protected String getProxyIP() {
-        return clientConfig.getProxyIP();
+        return clientConfig.getProxy().getHostname();
     }
 
     protected int getProxyPort() {
-        return clientConfig.getProxyPort();
+        return clientConfig.getProxy().getPort();
     }
 
     protected String getAppIP() {
-        return clientConfig.getAppIP();
+        return clientConfig.getApp().getHostname();
     }
 
     protected int getAppPort() {
-        return clientConfig.getAppPort();
+        return clientConfig.getApp().getPort();
     }
 
 }
