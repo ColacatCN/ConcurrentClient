@@ -47,6 +47,10 @@ public abstract class AbstractClientFactory {
         return clientConfig.getProtocol();
     }
 
+    protected String getClientBaseUrl() {
+        return clientConfig.getBaseUrl();
+    }
+
     protected int getClientAmount() {
         return clientConfig.getAmount();
     }

@@ -25,8 +25,9 @@ mybatis:
 
 factory-config:
   client-config:
-    type: socket
-    protocol: udp
+    type: http
+    protocol: tcp
+    baseUrl: /github/leo
     amount: 1
     proxy:
       hostname: 10.80.31.181

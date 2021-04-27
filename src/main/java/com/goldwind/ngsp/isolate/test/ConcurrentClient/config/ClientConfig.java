@@ -15,6 +15,8 @@ public class ClientConfig {
 
     private ClientProtocolEnum protocol;
 
+    private String baseUrl;
+
     private int amount;
 
     private RemoteConfig proxy;
