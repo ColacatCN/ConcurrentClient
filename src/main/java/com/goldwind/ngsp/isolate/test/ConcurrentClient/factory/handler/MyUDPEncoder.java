@@ -21,7 +21,7 @@ public class MyUDPEncoder extends MessageToMessageEncoder<Object> {
         int appPort = ConfigUtil.getAppPort();
         byte[] fixedContent = new byte[]{0x00, 0x00, 0x00, 0x01};
         byte[] ipBytes = NetUtil.createByteArrayFromIpAddressString(appIP);
-        byte[] portBytes = DataUtil.intToByteArray(appPort);
+        byte[] portBytes = DataUtil.portToByteArray(appPort);
 
         output.writeBytes(DataUtil.copyArray(fixedContent, ipBytes, portBytes));
         output.writeBytes(input);

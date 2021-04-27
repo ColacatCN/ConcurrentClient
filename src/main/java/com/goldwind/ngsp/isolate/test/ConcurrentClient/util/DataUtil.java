@@ -50,7 +50,7 @@ public class DataUtil {
         return data;
     }
 
-    public static byte[] intToByteArray(int i) {
+    public static byte[] portToByteArray(int i) {
         byte[] bytes = new byte[2];
         bytes[0] = (byte) ((i & 0x0000ff00) >> 8);
         bytes[1] = (byte) (i & 0x000000ff);
@@ -61,6 +61,15 @@ public class DataUtil {
         int value = 0;
         for (int i = 0; i < byteArray.length; i++) {
             int shift = (3 - i) * 8;
+            value += (byteArray[i] & 0xFF) << shift;
+        }
+        return value;
+    }
+
+    public static int byteArrayToPort(byte[] byteArray) {
+        int value = 0;
+        for (int i = 0; i < byteArray.length; i++) {
+            int shift = (1 - i) * 8;
             value += (byteArray[i] & 0xFF) << shift;
         }
         return value;

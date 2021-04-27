@@ -23,7 +23,6 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ClientProtocolEnum.TCP;
@@ -70,8 +69,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
         socket.connect(new InetSocketAddress(getProxyIP(), getProxyPort()));
         try (DataInputStream inputStream = new DataInputStream(socket.getInputStream());
              DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
-            boolean initialResult = sendSocks5InitialRequest(inputStream, outputStream);
-            if (initialResult && sendSocks5CommandRequest(inputStream, outputStream)) {
+            if (sendSocks5InitialRequest(inputStream, outputStream) && sendSocks5CommandRequest(inputStream, outputStream)) {
                 DatagramSocket datagramSocket = new DatagramSocket(0);
                 datagramSocketList.add(datagramSocket);
             }
@@ -99,26 +97,32 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
     }
 
     private boolean sendSocks5CommandRequest(DataInputStream inputStream, DataOutputStream outputStream) throws IOException, ClientException {
-        byte[] commandRequest = assembleSocks5CommandRequest(getAppIP(), getAppPort());
+        byte[] commandRequest = assembleSocks5CommandRequest();
         outputStream.write(commandRequest);
 
         boolean result = false;
-        byte[] commandResponse = new byte[10];
+        byte[] commandResponse = new byte[32];
         int numOfBytes = inputStream.read(commandResponse);
         if (numOfBytes != -1) {
             byte commandStatus = commandResponse[1];
             if (Socks5CommandStatus.SUCCESS.byteValue() == commandStatus) {
                 byte addressType = commandResponse[3];
+                RemoteConfig remoteConfig;
                 if (Socks5AddressType.IPv4.byteValue() == addressType) {
-                    RemoteConfig remoteConfig = RemoteConfig.builder()
+                    remoteConfig = RemoteConfig.builder()
                             .hostname(NetUtil.bytesToIpAddress(commandResponse, 4, 4))
-                            .port(6060)
+                            .port(DataUtil.byteArrayToPort(new byte[]{commandResponse[8], commandResponse[9]}))
                             .build();
-                    if (ConfigUtil.compareAndSetRemoteConfig(remoteConfig)) {
-                        log.info("bndAddr = {}, bndPort = {}.", remoteConfig.getHostname(), remoteConfig.getPort());
-                    }
                 } else if (Socks5AddressType.IPv6.byteValue() == addressType) {
-                    // TODO: 待开发
+                    remoteConfig = RemoteConfig.builder()
+                            .hostname(NetUtil.bytesToIpAddress(commandResponse, 4, 16))
+                            .port(DataUtil.byteArrayToPort(new byte[]{commandResponse[20], commandResponse[21]}))
+                            .build();
+                } else {
+                    throw new ClientException("暂不支持其他地址类型");
+                }
+                if (ConfigUtil.compareAndSetRemoteConfig(remoteConfig)) {
+                    log.info("bndAddr = {}, bndPort = {}.", remoteConfig.getHostname(), remoteConfig.getPort());
                 }
                 log.info("SOCKS5 建立成功");
                 result = true;
@@ -137,18 +141,12 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                      DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
                     for (; ; ) {
                         byte[] request = DataUtil.getMsg();
-                        if (log.isDebugEnabled()) {
-                            log.debug(Thread.currentThread().getName() + " 发送数据: " + Arrays.toString(request));
-                        }
                         outputStream.write(request);
                         kafkaUtil.send(request);
 
                         byte[] response = new byte[request.length];
                         int numOfBytes = inputStream.read(response);
                         if (numOfBytes != -1) {
-                            if (log.isDebugEnabled()) {
-                                log.debug(Thread.currentThread().getName() + " 接收数据: " + Arrays.toString(response));
-                            }
                             kafkaUtil.send(response);
                         } else {
                             throw new ClientException("Socket 客户端没有收到响应数据");
@@ -182,22 +180,25 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
         }
     }
 
-    private byte[] assembleSocks5CommandRequest(String appIP, int appPort) {
-        byte[] header = new byte[]{
+    private byte[] assembleSocks5CommandRequest() {
+        byte[] fixedContent = new byte[]{
                 0x05, 0x03, 0x00, 0x01
         };
-        byte[] ip = NetUtil.createByteArrayFromIpAddressString(appIP);
-        byte[] port = DataUtil.intToByteArray(appPort);
-        return DataUtil.copyArray(header, ip, port);
+        byte[] ipBytes = NetUtil.createByteArrayFromIpAddressString(ConfigUtil.getAppIP());
+        byte[] portBytes = DataUtil.portToByteArray(ConfigUtil.getAppPort());
+
+        return DataUtil.copyArray(fixedContent, ipBytes, portBytes);
     }
 
     private byte[] assembleUDPPackage(byte[] body) {
-        byte[] fixedContent = new byte[]{0x00, 0x00, 0x00, 0x01};
-        byte[] appIP = NetUtil.createByteArrayFromIpAddressString(ConfigUtil.getAppIP());
-        byte[] appPort = DataUtil.intToByteArray(ConfigUtil.getAppPort());
+        byte[] fixedContent = new byte[]{
+                0x00, 0x00, 0x00, 0x01
+        };
+        byte[] ipBytes = NetUtil.createByteArrayFromIpAddressString(ConfigUtil.getAppIP());
+        byte[] portBytes = DataUtil.portToByteArray(ConfigUtil.getAppPort());
+        byte[] headerBytes = DataUtil.copyArray(fixedContent, ipBytes, portBytes);
 
-        byte[] header = DataUtil.copyArray(fixedContent, appIP, appPort);
-        return DataUtil.copyArray(header, body, new byte[]{});
+        return DataUtil.copyArray(headerBytes, body, new byte[]{});
     }
 
 }
