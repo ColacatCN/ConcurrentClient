@@ -1,17 +1,19 @@
 # ConcurrentClient
+
 榨干 Socks5 代理的最后一丝性能
 
 ```yaml
 factory-config:
   client-config:
-    type: socket # 目前支持 Netty、Socket 和 HTTP 三种类型的客户端
-    protocol: udp # 传输层协议：TCP、UDP
-    amount: 1 # 客户端的并发数量
+    type: netty # 目前支持 Netty、Socket 和 HTTP 三种类型的客户端
+    protocol: tcp # 传输层协议：TCP、UDP
+    baseUrl: /github/leo # HTTP 客户端独有的 url 地址
+    amount: 10 # 客户端的并发数量
     proxy:
-      hostname: 10.80.31.181 # Sock5 代理的 IP
-      port: 7070 # Socks5 代理的端口号
+      hostname: 127.0.0.1 # Sock5 代理的 IP
+      port: 7071 # Socks5 代理的端口号
     app:
-      hostname: 10.80.31.181 # 目标服务的 IP
+      hostname: 127.0.0.1 # 目标服务的 IP
       port: 8081 # 目标服务的端口号
   data-config:
     type: byte # 模拟数据目前支持字节数组和数据文件(二选一)
