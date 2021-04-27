@@ -17,15 +17,6 @@ import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ClientProtoc
 
 public class Socks5InitialResponseHandler extends SimpleChannelInboundHandler<DefaultSocks5InitialResponse> {
 
-    private final String appIP;
-
-    private final int appPort;
-
-    public Socks5InitialResponseHandler(String appIP, int appPort) {
-        this.appIP = appIP;
-        this.appPort = appPort;
-    }
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Socks5InitialRequest socks5InitialRequest = new DefaultSocks5InitialRequest(Socks5AuthMethod.NO_AUTH);
@@ -35,13 +26,17 @@ public class Socks5InitialResponseHandler extends SimpleChannelInboundHandler<De
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5InitialResponse socks5InitialResponse) throws Exception {
         if (socks5InitialResponse.decoderResult().isSuccess()) {
-            Socks5CommandRequest socks5CommandRequest;
-            if (TCP.equals(ConfigUtil.getClientProtocol())) {
-                socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.CONNECT, Socks5AddressType.IPv4, appIP, appPort);
+            if (Socks5AuthMethod.NO_AUTH.equals(socks5InitialResponse.authMethod())) {
+                Socks5CommandRequest socks5CommandRequest;
+                if (TCP.equals(ConfigUtil.getClientProtocol())) {
+                    socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.CONNECT, Socks5AddressType.IPv4, ConfigUtil.getAppIP(), ConfigUtil.getAppPort());
+                } else {
+                    socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.UDP_ASSOCIATE, Socks5AddressType.IPv4, ConfigUtil.getAppIP(), ConfigUtil.getAppPort());
+                }
+                ctx.writeAndFlush(socks5CommandRequest);
             } else {
-                socks5CommandRequest = new DefaultSocks5CommandRequest(Socks5CommandType.UDP_ASSOCIATE, Socks5AddressType.IPv4, appIP, appPort);
+                throw new ClientException("Socks5InitialResponse 认证失败");
             }
-            ctx.writeAndFlush(socks5CommandRequest);
         } else {
             throw new ClientException("Socks5InitialResponse 解码失败");
         }

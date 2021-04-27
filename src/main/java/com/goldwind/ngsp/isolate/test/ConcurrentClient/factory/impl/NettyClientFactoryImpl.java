@@ -56,7 +56,7 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
 
                             // 2. 解码处理 Socks5InitialResponse
                             pipeline.addLast(new Socks5InitialResponseDecoder());
-                            pipeline.addLast(new Socks5InitialResponseHandler(getAppIP(), getAppPort()));
+                            pipeline.addLast(new Socks5InitialResponseHandler());
 
                             // 3. 解码处理 Socks5CommandResponse
                             pipeline.addLast(new Socks5CommandResponseDecoder());
@@ -78,6 +78,7 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
     public void sendMsg() throws Exception {
         initializeClientFactory();
         latch.await();
+
         for (Channel channel : channelList) {
             executorService.submit(() -> {
                 for (; ; ) {

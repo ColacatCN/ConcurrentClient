@@ -21,6 +21,7 @@ public abstract class AbstractClientFactory {
 
     protected void initializeClientFactory() throws Exception {
         clientConfig = BeanUtil.getBean(ClientConfig.class);
+
         String clientType = getClientType().getKey().toLowerCase();
         int amountOfClient = getClientAmount();
         executorService = new ThreadPoolExecutor(amountOfClient, amountOfClient,
