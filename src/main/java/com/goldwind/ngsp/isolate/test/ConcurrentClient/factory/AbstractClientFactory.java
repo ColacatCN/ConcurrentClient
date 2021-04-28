@@ -4,6 +4,7 @@ import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.ClientConfig;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ClientProtocolEnum;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ClientTypeEnum;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.BeanUtil;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.util.DateUtil;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractClientFactory {
 
     private ClientConfig clientConfig;
+
+    private long startTime;
 
     protected ExecutorService executorService;
 
@@ -32,6 +35,17 @@ public abstract class AbstractClientFactory {
 
         for (int i = 0; i < amountOfClient; i++) {
             createClient();
+        }
+        startTime = DateUtil.now();
+    }
+
+    protected void shutdownClientFactory() {
+        long timeout = getClientTimeout();
+        for (; ; ) {
+            if ((DateUtil.now() - startTime) >= timeout) {
+                executorService.shutdownNow();
+                break;
+            }
         }
     }
 
@@ -53,6 +67,10 @@ public abstract class AbstractClientFactory {
 
     protected int getClientAmount() {
         return clientConfig.getAmount();
+    }
+
+    protected long getClientTimeout() {
+        return clientConfig.getTimeout();
     }
 
     protected String getProxyIP() {

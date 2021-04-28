@@ -55,6 +55,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
         } else {
             sendUDPMsg();
         }
+        shutdownClientFactory();
     }
 
     private void createTCPClient() throws IOException {
@@ -139,7 +140,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
             executorService.submit(() -> {
                 try (DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                      DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
-                    for (; ; ) {
+                    while (!Thread.currentThread().isInterrupted()) {
                         byte[] request = DataUtil.getMsg();
                         outputStream.write(request);
                         kafkaUtil.send(request);
@@ -152,6 +153,8 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                             throw new ClientException("Socket 客户端没有收到响应数据");
                         }
                     }
+                } catch (IOException | ClientException e) {
+                    log.error(e.getMessage(), e);
                 }
             });
         }
@@ -160,7 +163,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
     private void sendUDPMsg() {
         for (DatagramSocket datagramSocket : datagramSocketList) {
             executorService.submit(() -> {
-                for (; ; ) {
+                while (!Thread.currentThread().isInterrupted()) {
                     byte[] requestBody = DataUtil.getMsg();
                     RemoteConfig remoteConfig;
                     if ((remoteConfig = ConfigUtil.getRemoteConfig()) != null) {

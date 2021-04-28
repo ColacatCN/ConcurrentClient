@@ -48,9 +48,10 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
     @Override
     public void sendMsg() throws Exception {
         initializeClientFactory();
+
         for (OkHttpClient httpClient : httpClientList) {
             executorService.submit(() -> {
-                for (; ; ) {
+                while (!Thread.currentThread().isInterrupted()) {
                     byte[] requestBytes = DataUtil.getMsg();
                     Request request = new Request.Builder()
                             .url(String.format(HTTP_CLIENT_URL, getAppIP(), getAppPort(), getClientBaseUrl()))
@@ -81,6 +82,8 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
                 }
             });
         }
+
+        shutdownClientFactory();
     }
 
 }

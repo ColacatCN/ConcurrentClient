@@ -25,15 +25,16 @@ mybatis:
 
 factory-config:
   client-config:
-    type: http
+    type: netty
     protocol: tcp
-    baseUrl: /github/leo
-    amount: 1
+    baseUrl:
+    amount: 10
+    timeout: 60000
     proxy:
-      hostname: 10.80.31.181
+      hostname: 127.0.0.1
       port: 7070
     app:
-      hostname: 10.80.31.181
+      hostname: 127.0.0.1
       port: 8081
   data-config:
     type: byte

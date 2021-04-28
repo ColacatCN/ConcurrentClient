@@ -81,7 +81,7 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
 
         for (Channel channel : channelList) {
             executorService.submit(() -> {
-                for (; ; ) {
+                while (!Thread.currentThread().isInterrupted()) {
                     byte[] bytes = DataUtil.getMsg();
 
                     if (TCP.equals(getClientProtocol())) {
@@ -101,6 +101,8 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
                 }
             });
         }
+
+        shutdownClientFactory();
     }
 
 }

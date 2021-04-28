@@ -19,6 +19,8 @@ public class ClientConfig {
 
     private int amount;
 
+    private long timeout;
+
     private RemoteConfig proxy;
 
     private RemoteConfig app;
