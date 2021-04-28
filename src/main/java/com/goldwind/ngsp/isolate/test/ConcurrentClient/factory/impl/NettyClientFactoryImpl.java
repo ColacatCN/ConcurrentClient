@@ -2,6 +2,7 @@ package com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.impl;
 
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.config.RemoteConfig;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.AbstractClientFactory;
+import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.codec.MyDecoder2;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.handler.Socks5CommandResponseHandler;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.handler.Socks5InitialResponseHandler;
 import com.goldwind.ngsp.isolate.test.ConcurrentClient.factory.handler.UniversalHandler;
@@ -28,6 +29,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ChannelTypeEnum.SINGLE;
 import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.ClientProtocolEnum.TCP;
 
 @Component
@@ -63,7 +65,11 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
                             pipeline.addLast(new Socks5CommandResponseHandler(channelList, latch));
 
                             // 4. 通用解码器和 handler
-                            pipeline.addLast(new ByteArrayDecoder());
+                            if (SINGLE.equals(ConfigUtil.getChannelType())) {
+                                pipeline.addLast(new ByteArrayDecoder());
+                            } else {
+                                pipeline.addLast(new MyDecoder2());
+                            }
                             pipeline.addLast(new UniversalHandler());
                         }
                     });
