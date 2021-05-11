@@ -152,6 +152,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                         } else {
                             throw new ClientException("Socket 客户端没有收到响应数据");
                         }
+                        sleep();
                     }
                 } catch (IOException | ClientException e) {
                     log.error(e.getMessage(), e);
@@ -178,6 +179,7 @@ public class SocketClientFactoryImpl extends AbstractClientFactory {
                             log.error(e.getMessage(), e);
                         }
                     }
+                    sleep();
                 }
             });
         }

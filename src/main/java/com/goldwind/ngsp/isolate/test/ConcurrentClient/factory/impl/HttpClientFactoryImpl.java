@@ -79,6 +79,7 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
 
                     });
                     kafkaUtil.send(requestBytes);
+                    sleep();
                 }
             });
         }

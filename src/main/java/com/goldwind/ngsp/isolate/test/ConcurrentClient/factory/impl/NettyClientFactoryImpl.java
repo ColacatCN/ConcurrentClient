@@ -104,6 +104,7 @@ public class NettyClientFactoryImpl extends AbstractClientFactory {
 
                     String channelId = channel.id().asLongText();
                     kafkaUtil.send(bytes, channelId);
+                    sleep();
                 }
             });
         }

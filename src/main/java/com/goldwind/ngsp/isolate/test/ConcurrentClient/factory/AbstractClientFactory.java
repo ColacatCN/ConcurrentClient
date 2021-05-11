@@ -39,6 +39,14 @@ public abstract class AbstractClientFactory {
         startTime = DateUtil.now();
     }
 
+    protected void sleep() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(getClientStep());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     protected void shutdownClientFactory() {
         long timeout = getClientTimeout();
         for (; ; ) {
@@ -71,6 +79,10 @@ public abstract class AbstractClientFactory {
 
     protected long getClientTimeout() {
         return clientConfig.getTimeout();
+    }
+
+    protected long getClientStep() {
+        return clientConfig.getStep();
     }
 
     protected String getProxyIP() {

@@ -30,6 +30,7 @@ factory-config:
     baseUrl:
     amount: 10
     timeout: 60000
+    step: 100
     proxy:
       hostname: 127.0.0.1
       port: 7070

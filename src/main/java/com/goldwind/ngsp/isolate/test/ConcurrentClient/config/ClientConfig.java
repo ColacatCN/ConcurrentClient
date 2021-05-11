@@ -21,6 +21,8 @@ public class ClientConfig {
 
     private long timeout;
 
+    private long step;
+
     private RemoteConfig proxy;
 
     private RemoteConfig app;
