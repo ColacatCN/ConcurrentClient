@@ -18,17 +18,17 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from isolate_test
+        from isolation_kafka
         where id = #{id,jdbcType=BIGINT}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from isolate_test
+        delete from isolation_kafka
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
     <insert id="insert" parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
-        insert into isolate_test (id, group_id, channel_type,
+        insert into isolation_kafka (id, group_id, channel_type,
         channel_id, msg_id, update_time
         )
         values (#{id,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, #{channelType,jdbcType=CHAR},
@@ -37,7 +37,7 @@
     </insert>
 
     <insert id="insertSelective" parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
-        insert into isolate_test
+        insert into isolation_kafka
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="groupId != null">
                 group_id,
@@ -76,7 +76,7 @@
 
     <update id="updateByPrimaryKeySelective"
             parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
-        update isolate_test
+        update isolation_kafka
         <set>
             <if test="groupId != null">
                 group_id = #{groupId,jdbcType=BIGINT},
@@ -98,7 +98,7 @@
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
-        update isolate_test
+        update isolation_kafka
         set group_id = #{groupId,jdbcType=BIGINT},
         channel_type = #{channelType,jdbcType=CHAR},
         channel_id = #{channelId,jdbcType=VARCHAR},
@@ -110,14 +110,14 @@
     <select id="selectByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from isolate_test
+        from isolation_kafka
         where group_id = #{groupId,jdbcType=BIGINT}
     </select>
 
     <select id="selectByGroupIdAndChannelId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from isolate_test
+        from isolation_kafka
         where group_id = #{groupId,jdbcType=BIGINT}
         and channel_id = #{channelId,jdbcType=VARCHAR}
     </select>
