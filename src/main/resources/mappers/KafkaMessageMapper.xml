@@ -74,6 +74,20 @@
         </trim>
     </insert>
 
+    <insert id="batchInsert" parameterType="list">
+        insert into isolation_kafka (group_id, channel_type, channel_id, msg_id, update_time)
+        values
+        <foreach collection="kafkaMessageList" item="kafkaMessage" index="index" separator=",">
+            (
+            #{kafkaMessage.groupId},
+            #{kafkaMessage.channelType},
+            #{kafkaMessage.channelId},
+            #{kafkaMessage.msgId},
+            #{kafkaMessage.updateTime}
+            )
+        </foreach>
+    </insert>
+
     <update id="updateByPrimaryKeySelective"
             parameterType="com.goldwind.ngsp.isolate.test.ConcurrentClient.pojo.KafkaMessage">
         update isolation_kafka

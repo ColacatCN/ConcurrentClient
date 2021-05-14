@@ -10,7 +10,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,15 +64,11 @@ public class HttpClientFactoryImpl extends AbstractClientFactory {
                         }
 
                         @Override
-                        public void onResponse(Call call, Response response) throws IOException {
+                        public void onResponse(Call call, Response response) {
                             if (!response.isSuccessful()) {
                                 log.error("无法访问目标 HTTP 服务, 状态码: {}.", response.code());
                             } else {
-                                ResponseBody responseBody;
-                                if ((responseBody = response.body()) != null) {
-                                    byte[] responseBytes = responseBody.bytes();
-                                    kafkaUtil.send(responseBytes);
-                                }
+                                kafkaUtil.send(requestBytes);
                             }
                         }
 

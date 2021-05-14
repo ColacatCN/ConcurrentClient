@@ -12,6 +12,8 @@ public interface KafkaMessageMapper {
 
     int insertSelective(KafkaMessage record);
 
+    int batchInsert(List<KafkaMessage> kafkaMessageList);
+
     KafkaMessage selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(KafkaMessage record);

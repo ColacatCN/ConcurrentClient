@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.goldwind.ngsp.isolate.test.ConcurrentClient.enums.DataTypeEnum.BYTE;
@@ -28,6 +29,7 @@ public class DataUtil {
             String filePath = dataConfig.getPath();
             bytes = assembleData(filePath);
         }
+        log.info("本次数据的 hashcode 值: {}", Arrays.hashCode(bytes));
         return bytes;
     }
 

@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -35,6 +36,16 @@ public class KafkaMessageMapperTest extends ApplicationTests {
     public void testSelectByGroupIdAndChannelId() {
         List<KafkaMessage> kafkaMessageList = mapper.selectByGroupIdAndChannelId(-1822537257L, "ClientThreadFactory-socket-client-1");
         assertEquals(67, kafkaMessageList.size());
+    }
+
+    @Test
+    public void testBatchInsert() {
+        List<KafkaMessage> kafkaMessageList = new ArrayList<>();
+        KafkaMessage kafkaMessage1 = new KafkaMessage(1L, "Single", "1", 1L, DateUtil.now());
+        kafkaMessageList.add(kafkaMessage1);
+        KafkaMessage kafkaMessage2 = new KafkaMessage(1L, "Single", "2", 2L, DateUtil.now());
+        kafkaMessageList.add(kafkaMessage2);
+        mapper.batchInsert(kafkaMessageList);
     }
 
 }
